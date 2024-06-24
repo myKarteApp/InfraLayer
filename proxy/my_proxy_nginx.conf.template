@@ -1,0 +1,61 @@
+server {
+
+    listen 443 ssl;
+    charset utf-8;
+
+    server_name wwww.${APP_DOMAIN} ${APP_DOMAIN};
+
+    proxy_set_header Host    $host;
+    proxy_set_header X-Real-IP    $remote_addr;
+    proxy_set_header X-Forwarded-Host $host;
+    proxy_set_header X-Forwarded-Server $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header ${PROXY_TOKEN_KEY} ${PROXY_TOKEN};
+
+    ssl_certificate /etc/nginx/ssl/cert.pem;
+    ssl_certificate_key /etc/nginx/ssl/key.pem;
+
+    proxy_hide_header Server;
+    proxy_hide_header X-Powered-By;
+
+    # backendへのリクエスト転送
+    location /api/ {
+        proxy_pass http://backend:${BACK_PORT}/;
+    }
+
+    # clientへのリクエスト転送
+    location /assets/ {
+        alias /usr/share/nginx/static/assets/;
+    }
+
+    location / {
+        alias /usr/share/nginx/static/;
+        try_files $uri $uri/ /index.html;
+    }
+}
+
+# server {
+
+#     listen 443 ssl;
+#     charset utf-8;
+
+#     server_name wwww.api.${APP_DOMAIN} api.${APP_DOMAIN};
+
+#     proxy_set_header Host    $host;
+#     proxy_set_header X-Real-IP    $remote_addr;
+#     proxy_set_header X-Forwarded-Host $host;
+#     proxy_set_header X-Forwarded-Server $host;
+#     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+#     proxy_set_header ${PROXY_TOKEN_KEY} ${PROXY_TOKEN};
+
+#     ssl_certificate /etc/nginx/ssl/cert.pem;
+#     ssl_certificate_key /etc/nginx/ssl/key.pem;
+
+#     proxy_hide_header Server;
+#     proxy_hide_header X-Powered-By;
+
+#     # backendへのリクエスト転送
+#     location /*/ {
+#         proxy_pass http://backend:${BACK_PORT}/;
+#     }
+# }
