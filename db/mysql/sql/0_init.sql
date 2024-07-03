@@ -1,0 +1,12 @@
+-- データベースの作成
+CREATE DATABASE IF NOT EXISTS ${MYSQL_DATABASE} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- ユーザーの作成
+CREATE USER IF NOT EXISTS '${MYSQL_USER}'@'%' IDENTIFIED BY '${MYSQL_PASSWORD}';
+
+-- 権限の付与
+GRANT ALL PRIVILEGES ON ${MYSQL_DATABASE}.* TO '${MYSQL_USER}'@'%';
+FLUSH PRIVILEGES;
+
+SET GLOBAL time_zone = ${TZ};
+-- SET SESSION time_zone = ${TZ}; Nest.jsのタイムゾーンは${TZ}なので自動的に、${TZ}になる

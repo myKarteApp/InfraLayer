@@ -3,7 +3,7 @@ server {
     listen 443 ssl;
     charset utf-8;
 
-    server_name wwww.${APP_DOMAIN} ${APP_DOMAIN};
+    server_name ${APP_DOMAIN};
 
     proxy_set_header Host    $host;
     proxy_set_header X-Real-IP    $remote_addr;
@@ -20,6 +20,20 @@ server {
 
     # backendへのリクエスト転送
     location /api/ {
+        # CORS設定
+        add_header 'Access-Control-Allow-Origin' 'https://${APP_DOMAIN}';
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, OPTIONS';
+        add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization';
+
+        # オプションメソッドへの応答
+        if ($request_method = 'OPTIONS') {
+            add_header 'Access-Control-Allow-Origin' '*';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, OPTIONS';
+            add_header 'Access-Control-Max-Age' 1728000;
+            add_header 'Content-Type' 'text/plain charset=UTF-8';
+            add_header 'Content-Length' 0;
+            return 204;
+        }
         proxy_pass http://backend:${BACK_PORT}/;
     }
 

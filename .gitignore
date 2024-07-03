@@ -1,2 +1,5 @@
 .env
 ssl
+.DS_Store
+dump.rdb
+my_proxy_nginx.conf
