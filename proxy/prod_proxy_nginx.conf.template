@@ -18,6 +18,11 @@ server {
     proxy_hide_header Server;
     proxy_hide_header X-Powered-By;
 
+    # location /_/api/ {
+    #     proxy_set_header x-csrf-token $host;
+    #     proxy_pass http://backend:${BACK_PORT}/;
+    # }
+
     # backendへのリクエスト転送
     location /api/ {
         proxy_pass http://backend:${BACK_PORT}/;
